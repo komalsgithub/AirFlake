@@ -1,0 +1,197 @@
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #e6e6e6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
+}
+
+/* Vault Container */
+.vault-container {
+  display: flex;
+  gap: 4rem;
+  background-color: transparent;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* Quote Section */
+.quote-section {
+  flex: 1;
+  min-width: 250px;
+}
+.quote-title {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+.quote-text {
+  font-size: 2.5rem;
+  color: #777;
+  line-height: 2.4rem;
+}
+
+/* Photo Card */
+.photo-card {
+  flex: 1;
+  background-color: #fff;
+  border-radius: 60px;
+  padding: 2rem;
+  min-width: 320px;
+  max-width: 500px;
+  max-height: 1000px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+}
+
+/* Top Row */
+.photo-card-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.photo-location {
+  display: flex;
+  justify-content: center; /* Horizontally center */
+  width: 50%;     
+  margin-left: 115px;        /* Ensure it spans full row */
+}
+
+
+/* Image Row */
+.photo-card-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-arrow {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #888;
+  cursor: pointer;
+}
+.photo-image-wrapper {
+  position: relative;
+  border-radius: 35px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 350px;
+  max-height: 450px;
+}
+
+.photo-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.photo-tooltip {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: #555;
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  display: none;
+}
+.photo-image-wrapper:hover .photo-tooltip {
+  display: block;
+}
+
+/* Bottom Row */
+.photo-card-footer {
+  text-align: center;
+}
+.photo-date {
+  display: block;
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+.photo-caption {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+
+/* Each card block */
+.new-card {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  background-color: #f9f9f9;
+  min-height: 400px; /* 👈 Increase this for taller card */
+  
+}
+
+/* Left photo box */
+.photo-left {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-photo-box {
+  width: 370px;
+  height: 450px;
+  border: 2px dashed #aaa;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  color: #777;
+  cursor: pointer;
+}
+
+/* Right inputs */
+.inputs-right {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.inputs-right input,
+.inputs-right textarea {
+  padding: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  font-size: 1.1rem;
+}
+
+  li {
+    cursor: pointer;
+    background: #eee;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  li:hover {
+    background: #ccc;
+  }

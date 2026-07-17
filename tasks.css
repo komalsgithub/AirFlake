@@ -1,0 +1,446 @@
+/* ------------------------------
+   Global & Background Settings
+------------------------------ */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: url('https://images.unsplash.com/photo-1749371930398-c5e7f03f1375?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+}
+
+/* ------------------------------
+   Main Wrapper
+------------------------------ */
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px;
+}
+
+/* ------------------------------
+   Glassmorphism Base Class
+------------------------------ */
+.glass {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* ------------------------------
+   Sidebar - To-Do List
+------------------------------ */
+.sidebar {
+  min-width: 280px;
+  max-width: 300px;
+  width: 100%;
+  margin: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar button#addTaskBtn {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: #333;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.sidebar button#addTaskBtn:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Container where tasks will be added */
+#todoContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* ------------------------------
+   Goals Wrapper & Form
+------------------------------ */
+#goals-wrapper {
+  flex: 1;
+  min-width: 320px;
+  width: 100%;
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.goal-form {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  /* Glass effect */
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.goal-form > * {
+  margin-bottom: 15px;
+}
+
+/* ------------------------------
+   Input & Textarea Fields
+------------------------------ */
+.input-box,
+.description-box {
+  width: 80%;
+  padding: 12px;
+  font-size: 1rem;
+  color: #333;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ------------------------------
+   Button General Styling
+------------------------------ */
+/*button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  transition: background 0.3s ease, transform 0.2s ease;
+}*/
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  transition: background-color 1s ease, transform 0.2s ease;
+}
+
+button:active {
+  background-color: rgba(0, 102, 255, 0.8); /* Soft blue effect */
+  transform: scale(0.95); /* Slight shrink effect */
+}
+
+
+/* Specific Buttons 
+#saveBtn,
+.submit-button {
+  background: rgba(255, 255, 255, 0.658);
+  color: #333;
+}
+
+.basic-priority {
+  background: rgba(200, 200, 200, 0.35);
+  color: #333;
+}
+
+.high-priority {
+  background: rgba(180, 180, 180, 0.35);
+  color: #333;
+}
+
+.basic-priority:hover, 
+.high-priority:hover {
+  background: rgba(200, 200, 200, 0.45);
+}
+*/
+/* ------------------------------
+   Switch (Lock Toggle)
+------------------------------ */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  margin: 0 10px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.35);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: #333;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background: rgb(150, 255, 136);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider .label-text {
+  position: absolute;
+  top: 50%;
+  left: 60px;
+  transform: translateY(-50%);
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* ------------------------------
+   Goal Time Card
+------------------------------ */
+.goal-time-card h2 {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.time-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.time-option {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.25);
+  transition: background 0.3s ease;
+}
+
+.time-option:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* ------------------------------
+   Day Selector Styling
+------------------------------ */
+.day-selector {
+  text-align: center;
+}
+
+.day-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.day-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: #333;
+  transition: background 0.3s ease;
+}
+
+.day-circle:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.day-circle.active {
+  background: rgba(255, 255, 255, 0.5);
+  color: #333;
+}
+
+.day-circle.all {
+  padding: 10px 20px;
+  border-radius: 16px;
+}
+
+/* ------------------------------
+   Deadline Card Styling
+------------------------------ */
+.deadline-card {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.deadline-card h2 {
+  font-size: 1.2rem;
+  color: #333;
+  text-align: center;
+}
+
+.month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+#month-year {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.date-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 10px;
+}
+
+.date-grid button {
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 0.9rem;
+  color: #333;
+  transition: background 0.3s ease;
+}
+
+.date-grid button:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* ------------------------------
+   Time Left Display
+------------------------------ */
+.time-left-display {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.countdown {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* ------------------------------
+   Goal Summary Section
+------------------------------ */
+.goal-summary {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.goal-summary h2 {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.summary-cards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.summary-card {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  padding: 15px;
+  text-align: center;
+  flex: 1;
+  min-width: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.summary-card h3 {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.summary-card p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* ------------------------------
+   Responsive Adjustments
+------------------------------ */
+@media (max-width: 768px) {
+  .wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .sidebar,
+  #goals-wrapper {
+    max-width: 100%;
+  }
+  
+  .goal-form {
+    width: 90%;
+  }
+  
+  .summary-cards {
+    flex-direction: column;
+  }
+}

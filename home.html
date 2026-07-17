@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=yes" />
+  <title>Home | AirFlake - Focus, Tasks & Motivation</title>
+  <meta name="description"
+    content="Welcome to AirFlake – Your digital space for focus, task management, and daily motivation. Track goals, feel better, and boost your day." />
+  <meta name="keywords"
+    content="focus, motivation, productivity, goal tracker, daily quote, emotion tracker, AirFlake" />
+  <meta name="author" content="AirFlake Team" />
+  <link rel="canonical" href="https://yourdomain.com/home.html" />
+  <meta property="og:title" content="AirFlake - Daily Focus and Motivation" />
+  <meta property="og:description"
+    content="Boost your focus and stay motivated with daily quotes, tasks, and emotion tracking inside AirFlake." />
+  <meta property="og:image" content="https://yourdomain.com/images/preview.jpg" />
+  <meta property="og:url" content="https://yourdomain.com/home.html" />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="home.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <main class="main-container">
+    <section class="header-container" aria-label="Greeting Section">
+      <div id="clock" aria-label="Clock"></div>
+      <h1 id="greeting">Good</h1>
+    </section>
+
+    <section class="focus-section" aria-label="Focus Symbols">
+      <div class="focus-text-card">
+        <div class="focus-vertical-text">F<br />O<br />C<br />U<br />S</div>
+      </div>
+      <div class="focus-chinese-card">
+        <div class="focus-chinese-text">集<br />中</div>
+      </div>
+      <div class="focus-symbol-card">
+        <div class="focus-symbol-text">ૐ</div>
+      </div>
+    </section>
+
+    <section class="main-dashboard" aria-label="Motivation and Goal Section">
+      <div class="motivation-container">
+        <div class="motivation-card">
+          <div class="quote">Ready to make today count?</div>
+        </div>
+      </div>
+
+      <div class="daily-quote-card ">
+        <h2 class="daily-quote-headline">Quote of the Moment</h2>
+        <div class="quote-separator"></div>
+        <p class="daily-quote-text" id="daily-quote">Loading...</p>
+      </div>
+
+      <div class="hand-bubble-container">
+        <div class="hand-bubble" style="top: 77%; left: 20%;">
+          <div class="hand-bubble-text">✌️</div>
+        </div>
+      </div>
+
+      <div class="calendar-container">
+        <div class="calendar-card">
+          <div class="day" id="day">Loading...</div>
+          <div class="date" id="date">--</div>
+          <div class="year" id="year">----</div>
+        </div>
+      </div>
+
+
+      <div class="task-reminder-card">
+        <h3 class="card-title">
+          You have<br />some<br />tasks<br />to complete
+        </h3>
+        <button class="goal-btn" onclick="window.location.href='tasks.html'" aria-label="Go to Goal Bar">Go to Goal
+          Bar</button>
+      </div>
+
+
+
+      <div class="mood-tracker-card">
+        <h3 class="feel-heading">How are you feeling today?</h3>
+        <div class="feel-options">
+          <button class="feel-btn" onclick="selectFeeling(this)"><span class="feel-text">😊 Great</span></button>
+          <button class="feel-btn" onclick="selectFeeling(this)"><span class="feel-text">😐 Medium</span></button>
+          <button class="feel-btn" onclick="selectFeeling(this)"><span class="feel-text">😞 Low</span></button>
+        </div>
+        <div class="popup-circle" id="popup-circle">
+          <span class="q-circle">Ｑ</span>
+        </div>
+      </div>
+
+      <div class="cake-bubble-container">
+        <div class="cake-bubble"></div>
+        <div class="cake-bubble-text">🎂</div>
+
+        <div class="birthday-reminder-card">
+          <img src="https://i.pinimg.com/736x/94/9f/6b/949f6bd4aa4dd3294e5b948ac996be2e.jpg" alt="Vivan"
+            class="profile-pic" />
+          <div class="blur-text">
+            <strong>🎂 Vivan’s birthday is coming up!</strong><br />
+            Have you thought of a present?
+          </div>
+        </div>
+
+        <div class="ai-brain-card" onclick="window.location.href = 'ai.html'">
+          <div class="glass-inner-glow"></div>
+          <div class="ai-brain-icon"><img src="https://i.pinimg.com/736x/09/b8/6a/09b86a10d1ec7a39486a03fbe45d196d.jpg">
+          </div>
+          <div class="ai-brain-label">A.I</div>
+        </div>
+    </section>
+
+   <!--  <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">
+      <div class="bubble" style="--color: rgba(135, 206, 250, 0.3)">🎬</div>
+    </a>
+    <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer">
+      <div class="bubble" style="--color: rgba(135, 206, 250, 0.3)">📌</div>
+    </a>
+    <a href="https://apple.com" target="_blank" rel="noopener noreferrer">
+      <div class="bubble" style="--color: rgba(135, 206, 250, 0.3)">🍎</div>
+    </a> -->
+
+    <button id="skipBtn" aria-label="Skip animation or intro">Skip  ►</button>
+
+
+    <footer class="site-footer">
+      <p>&copy; 2025 AirFlake. All rights reserved.</p>
+      <nav class="footer-nav">
+        <a href="home.html">Home</a> |
+        <a href="tasks.html">Tasks</a> |
+        <a href="focus.html">Focus</a> |
+        <a href="vault.html">Vault</a> |
+        <a href="organize.html">Organize</a> |
+        <a href="ai.html">AI</a>
+      </nav>
+    </footer>
+
+  </main>
+  <script src="home.js"></script>
+</body>
+
+</html>

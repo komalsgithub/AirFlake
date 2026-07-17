@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="My Vault - Store your motivational photos and quotes securely. Add new memories, track inspiration, and grow daily." />
+  <meta name="keywords" content="vault, motivation, inspirational quotes, photo storage, memory tracker, personal growth" />
+  <meta name="author" content="Your Name or Brand" />
+  <title>My Vault | Motivation & Memories</title>
+  <link rel="stylesheet" href="vault.css" />
+</head>
+<body>
+  <div class="vault-container">
+    
+    <section class="quote-section">
+      <h1 class="quote-title">Quote</h1>
+      <p class="quote-text">
+        Genius is one<br />
+        percent inspiration<br />
+        and ninety-nine<br />
+        percent perspiration.
+      </p>
+    </section>
+    
+    <section class="photo-card">
+      <div class="photo-card-header">
+        <span class="photo-location">California</span>
+        <span class="photo-pagination">2 / 8</span>
+      </div>
+
+      <div class="photo-card-body">
+        <button class="nav-arrow left">&#8249;</button>
+        <div class="photo-image-wrapper">
+          <img src="https://i.pinimg.com/736x/e5/ab/54/e5ab540435ac327a775eccb65235f657.jpg" alt="Memory Photo" class="photo-image" />
+          <span class="photo-tooltip">Click here to read the story behind this picture.</span>
+        </div>
+        <button class="nav-arrow right">&#8250;</button>
+      </div>
+
+      <div class="photo-card-footer">
+        <span class="photo-date">19 / 04 / 25</span>
+        <p class="photo-caption">Simplicity is the ultimate sophistication. 🌿</p>
+      </div>
+    </section>
+
+    
+  <!-- 🔽 BOTTOM: New card -->
+  <div class="new-card">
+    <div class="photo-left">
+      <label for="newPhoto" class="add-photo-box">
+        <span>+</span>
+        <p>Add Photo</p>
+      </label>
+      <input type="file" id="newPhoto" style="display: none">
+    </div>
+
+    <div class="inputs-right">
+      <input type="text" placeholder="Add Caption">
+      <input type="text" placeholder="Add Quotes">
+      <textarea placeholder="Write Story behind this Photo/Video"></textarea>
+    </div>
+  </div>
+
+    <h2>Select a Quote</h2>
+  <ul>
+    <li onclick="selectQuote('Focus on what matters.')">Focus on what matters.</li>
+    <li onclick="selectQuote('One thing at a time.')">One thing at a time.</li>
+    <li onclick="selectQuote('Small steps every day.')">Small steps every day.</li>
+  </ul>
+
+
+  </div>
+  <script src="vault.js"></script>
+</body>
+</html>

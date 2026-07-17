@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description"
+    content="Organize your tasks, goals, and deadlines efficiently with AirFlake's smart task planner." />
+  <title>Task Planner | AirFlake</title>
+  <link rel="stylesheet" href="tasks.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <main class="wrapper">
+    <div class="sidebar">
+      <button id="addTaskBtn" aria-label="Add a new task">To-Do List</button>
+      <section id="todoContainer" aria-label="Task List">
+        <!-- Tasks will be dynamically added here -->
+      </section>
+    </div>
+
+    <section id="goals-wrapper" aria-label="Goals Container">
+
+      <form class="goal-form">
+        <input type="text" class="input-box" id="myInput" placeholder="Type your goal title and press Enter"
+          aria-label="Goal Title" />
+
+        <label class="switch">
+          <input type="checkbox" id="lockToggle" />
+          <span class="slider">
+            <span class="label-text">Lock</span>
+          </span>
+        </label>
+
+        <article class="goal-time-card">
+          <h2>Duration</h2>
+          <div class="time-options">
+            <button type="button" class="time-option" data-minutes="30">
+              30 Minutes
+            </button>
+            <button type="button" class="time-option" data-minutes="60">
+              1 Hour
+            </button>
+            <button type="button" class="time-option" data-minutes="90">
+              1.5 Hours
+            </button>
+            <button type="button" class="time-option" data-minutes="120">
+              2 Hours
+            </button>
+          </div>
+        </article>
+        <input id="descriptionBox" class="description-box" placeholder="Write about your goal"
+          aria-label="Goal Description"></input>
+        <div class="goal-actions">
+          <button type="button" id="saveBtn" class="submit-button">
+            Save
+          </button>
+          <button type="button" class="basic-priority">
+            <span class="text">Basic Priority</span>
+            <span class="arrow-circle">➤</span>
+          </button>
+          <button type="button" class="high-priority">
+            <span class="text">High Priority</span>
+            <span class="arrow-circle">➤</span>
+          </button>
+          </button>
+        </div>
+
+        <div class="day-selector-wrapper">
+          <article class="day-selector">
+
+            <div class="day-buttons">
+              <button type="button" class="day-circle" data-day="Mon">
+                Mon
+              </button>
+              <button type="button" class="day-circle" data-day="Tue">
+                Tue
+              </button>
+              <button type="button" class="day-circle" data-day="Wed">
+                Wed
+              </button>
+              <button type="button" class="day-circle" data-day="Thu">
+                Thu
+              </button>
+              <button type="button" class="day-circle" data-day="Fri">
+                Fri
+              </button>
+              <button type="button" class="day-circle" data-day="Sat">
+                Sat
+              </button>
+              <button type="button" class="day-circle" data-day="Sun">
+                Sun
+              </button>
+              <button type="button" class="day-circle all" id="select-all">
+                All week
+              </button>
+            </div>
+          </article>
+        </div>
+
+        <article class="deadline-card">
+          <h2>Choose Deadline</h2>
+          <div class="month-nav">
+            <button type="button" id="prev-month" aria-label="Previous month">
+              &#8592;
+            </button>
+            <span id="month-year" aria-live="polite"></span>
+            <button type="button" id="next-month" aria-label="Next month">
+              &#8594;
+            </button>
+          </div>
+          <div class="date-grid" id="date-grid"></div>
+
+          <div class="time-left-display">
+            <div id="countdown" class="countdown">--</div>
+          </div>
+        </article>
+
+        <!-- === Goal Progress Summary Section === -->
+        <section class="goal-summary" aria-label="Goal Tracking Summary">
+          <h2>📊 Goal Progress Overview</h2>
+          <div class="summary-cards">
+            <article class="summary-card missed">
+              <h3>Days Missed</h3>
+              <p id="daysMissed">--</p>
+            </article>
+            <article class="summary-card remaining">
+              <h3>Remaining Days</h3>
+              <p id="daysRemaining">--</p>
+            </article>
+            <article class="summary-card completed">
+              <h3>Completed Days</h3>
+              <p id="daysCompleted">--</p>
+            </article>
+          </div>
+        </section>
+      </form>
+    </section>
+
+    <!--  <footer class="site-footer">
+        <p>&copy; 2025 AirFlake. All rights reserved.</p>
+        <nav class="footer-nav">
+          <a href="home.html">Home</a> | <a href="tasks.html">Tasks</a> |
+          <a href="focus.html">Focus</a> | <a href="vault.html">Vault</a> |
+          <a href="organize.html">Organize</a> |
+          <a href="ai.html">AI</a>
+        </nav>
+      </footer> -->
+  </main>
+  <script src="tasks.js"></script>
+</body>
+
+</html>

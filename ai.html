@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A.I</title>
+
+    <style>
+      body {
+        margin: 0;
+        background: #111;
+        font-family: monospace;
+      }
+
+      .card {
+        width: 40vw;
+        height: 30vh;
+        position: absolute;
+        top: 200px;
+        left: 450px;
+        border-radius: 12px;
+        text-align: center;
+        color: white;
+        font-size: 20px;
+        background: linear-gradient(
+          90deg,
+          #330000 25%,
+          #660000 50%,
+          #330000 75%
+        );
+        background-size: 200% 100%;
+        animation: skeletonRed 1.5s infinite ease-in-out;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 0 20px red;
+      }
+
+      @keyframes skeletonRed {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      .card h1,
+      .card p {
+        margin: 10px;
+        filter: blur(1px);
+        opacity: 0.7;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card">
+      <h1>A.I</h1>
+      <p>This feature is in progress . . .</p>
+    </div>
+  </body>
+</html>

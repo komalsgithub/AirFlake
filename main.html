@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>AirFlake | Productivity, Focus & Task Management Tool</title>
+
+    <!-- SEO Meta Tags -->
+    <meta
+      name="description"
+      content="AirFlake is your all-in-one productivity tool for tracking tasks, staying focused, and managing your goals with a visual vault and AI assistant."
+    />
+    <meta
+      name="keywords"
+      content="goal tracker, productivity app, focus tool, task manager, AI assistant, AirFlake"
+    />
+    <meta name="author" content="AirFlake Team" />
+    <link rel="canonical" href="https://yourdomain.com/" />
+
+    <!-- Open Graph Meta Tags (for social sharing) -->
+    <meta
+      property="og:title"
+      content="AirFlake | All-in-One Focus & Goal Tracker"
+    />
+    <meta
+      property="og:description"
+      content="Boost your productivity with AirFlake. Track goals, manage tasks, stay focused and review progress—all in one place."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://yourdomain.com/" />
+    <meta
+      property="og:image"
+      content="https://yourdomain.com/images/preview.png"
+    />
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <nav class="sidebar" aria-label="Main Navigation">
+      <h1 class="logo">
+        <img
+          src="https://cdn-icons-png.flaticon.com/128/1331/1331578.png"
+          alt="AirFlake Logo"
+          class="icon"
+        />
+        <!--  <span>AirFlake</span> -->
+      </h1>
+
+      <ul>
+        <li>
+           <div class="tooltip">
+          <a onclick="loadPage('home.html')" aria-label="Home">
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/1946/1946488.png"
+              alt="Home Icon"
+              class="icon"
+            />
+          </a>
+           <span class="tooltip-text">Home</span>
+          </div>
+        </li>
+        <li>
+          <div class="tooltip">
+          <a onclick="loadPage('tasks.html')" aria-label="Tasks">
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/9741/9741134.png"
+              alt="Tasks Icon"
+              class="icon"
+            />
+          </a>
+          <span class="tooltip-text">Tasks</span>
+          </div>
+        </li>
+        <li>
+           <div class="tooltip">
+          <a onclick="loadPage('focus.html')" aria-label="Focus">
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/3959/3959380.png"
+              alt="Focus Icon"
+              class="icon"
+            />
+          </a>
+          <span class="tooltip-text">Focus</span>
+          </div>
+        </li>
+        <li>
+          <div class="tooltip">
+          <a onclick="loadPage('vault.html')" aria-label="Vault">
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/12682/12682952.png"
+              alt="Vault Icon"
+              class="icon"
+            />
+          </a>
+          <span class="tooltip-text">Vault</span>
+          </div>
+        </li>
+        <li>
+          <div class="tooltip">
+          <a onclick="loadPage('organizer.html')" aria-label="Organize">
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/481/481865.png"
+              alt="Organize Icon"
+              class="icon"
+            />
+          </a>
+          <span class="tooltip-text">Organize</span>
+          </div>
+        </li>
+        <li>
+          <div class="tooltip">
+          <a onclick="loadPage('ai.html')" aria-label="AI Assistant">
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/17653/17653338.png"
+              alt="AI Assistant Icon"
+              class="icon"
+            />
+          </a>
+          <span class="tooltip-text">A.I Friend</span>
+          </div>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <iframe
+        id="content-frame"
+        src="home.html"
+        title="Main Content Frame"
+        loading="lazy"
+      ></iframe>
+    </main>
+
+    <script src="main.js"></script>
+  </body>
+</html>

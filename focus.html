@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Focus Timer | Boost Productivity with AirFlake</title>
+  <meta name="description"
+    content="Stay focused and productive with AirFlake's Focus Timer. Set custom sessions, take timely breaks, and improve concentration with our distraction-free tool." />
+  <meta name="keywords"
+    content="focus timer, productivity app, pomodoro, time management, break timer, study timer, AirFlake" />
+  <meta name="author" content="AirFlake Team" />
+  <link rel="canonical" href="https://yourdomain.com/focus.html" />
+  <link rel="stylesheet" href="focus.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <main class="container">
+    <div class="main-wrapper">
+
+      <!-- Top Card -->
+      <section class="top-card" aria-labelledby="focus-section-title">
+        <input class="input-box" type="text" id="focusInput" placeholder="Enter your task" />
+
+        <!-- ✅ Zone Card Now Correctly Visible 
+        <div class="zone-card">
+          <div class="zoneIn">abcbbb</div>
+        </div> -->
+
+        <div class="timer-container">
+          <div class="timer-card">
+
+            <!-- Focus Timer -->
+            <div class="focus-timer" id="focus-timer" aria-label="Focus Timer">
+              <span id="hours" id="timerDisplay">00</span> : <span id="minutes" id="timerDisplay">30</span> :
+              <span id="seconds" id="timerDisplay">00</span>
+            </div>
+            
+
+            <!-- Break Timer with Tooltip -->
+            <div class="tooltip-container">
+              <div class="break-timer" id="break-timer" aria-label="Break Timer">
+                <div class="break-time" id="break-minutes">5</div>
+                <div class="break-unit">min</div>
+              </div>
+              <div class="tooltip" role="tooltip">
+                This is your break timer. Relax for 5 minutes!
+              </div>
+            </div>
+             <div id="chartContainer">
+        <canvas id="timeChart"></canvas>
+
+      </div>
+
+          </div> <!-- CLOSE .timer-card -->
+        </div> <!-- CLOSE .timer-container -->
+      </section>
+
+      <!-- Bottom Card -->
+      <section class="bottom-card" aria-labelledby="focus-section-title"></section>
+
+      <div class="hand">
+        <img src="https://cdn-icons-png.flaticon.com/128/1/1427.png" alt="Relaxing Hand Icon" class="hand-img" />
+      </div>
+
+      <div class="music-wrapper" id="musicPlayer">
+        <div class="music" aria-hidden="true"><!-- Add music -->
+          <img src="https://i.pinimg.com/736x/f5/9b/94/f59b94aa9c102d8b05972d4d403978f3.jpg" class="music-image">
+          <!-- Modern Icon Button -->
+          <button onclick="toggleMusic()" id="musicBtn" class="music-btn">
+            ▶️
+          </button>
+          <!-- Audio Element (hidden) -->
+          <audio id="focusMusic" src="calm-space-music-312291.mp3" loop></audio>
+
+          <button class="remove-music-btn" aria-label="Remove music">Remove</button>
+          <h2 class="music-title">Music🎵</h2>
+        </div>
+      </div>
+
+      <!-- Start Button -->
+      <section class="start-container" aria-label="Start Focus Button">
+        <button class="start-button" aria-label="Start Focus Session" onclick="saveFocusTask()">
+          <span class="start-button-text">Start</span>
+        </button>
+
+        <div class="quote-wrapper" id="quoteCard">
+          <div class="quote" aria-hidden="true">
+            <h2 class="quote-text" id="quoteText">Add Quote from <br> your vault</h2>
+            <button class="add-btn" aria-label="Add quote" onclick="openVault()">Add</button>
+            <h2 class="quote-title">Quotes🌻</h2>
+          </div>
+        </div>
+
+        <div class="environment-container" id="environmentContainer">
+          <div class="environment" aria-hidden="true">
+            <button class="btn1" aria-label="Add environment" onclick="applySilentMode()">Silent mode</button>
+            <button class="btn2" aria-label="Add environment" onclick="applyNatureMode()">Nature mode</button>
+            <button class="btn3" aria-label="Add environment">Paper mode</button>
+            <h2 class="environment-title">Environment🌱</h2>
+          </div>
+        </div>
+        
+      </section>
+
+    </div> <!-- CLOSE .main-wrapper -->
+  </main>
+
+  <script src="focus.js"></script>
+</body>
+
+</html>
