@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>AirFlake - Focus & Tasks</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ===== APPLE DESIGN SYSTEM VARIABLES ===== */
+    :root {
+      --app-bg: #f5f5f7;
+      --card-bg: #ffffff;
+      --text-primary: #1d1d1f;
+      --text-secondary: #86868b;
+      --text-tertiary: #a1a1a6;
+      --accent-blue: #0071e3;
+      --accent-hover: #0077ed;
+      --danger: #ff3b30;
+      --border-color: rgba(0, 0, 0, 0.05);
+      --nav-glass: rgba(255, 255, 255, 0.72);
+      --input-bg: rgba(0, 0, 0, 0.04);
+      --shadow-diffused: 0 4px 24px rgba(0, 0, 0, 0.04);
+      --shadow-elevation: 0 12px 40px rgba(0, 0, 0, 0.12);
+      --easing: cubic-bezier(0.25, 0.1, 0.25, 1);
+      
+      /* Nature Theme Colors */
+      --nature-light: #e6f4ea; 
+      --nature-dark: #16241a;
+      
+      /* Progress Ring Math */
+      --ring-circumference: 942.48; /* 2 * pi * 150 */
+    }
+
+    [data-theme="dark"] {
+      --app-bg: #000000;
+      --card-bg: #1c1c1e;
+      --text-primary: #f5f5f7;
+      --text-secondary: #98989d;
+      --text-tertiary: #636366;
+      --accent-blue: #0a84ff;
+      --accent-hover: #409cff;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --nav-glass: rgba(28, 28, 30, 0.72);
+      --input-bg: rgba(255, 255, 255, 0.1);
+      --shadow-diffused: 0 4px 24px rgba(0, 0, 0, 0.4);
+      --shadow-elevation: 0 16px 48px rgba(0, 0, 0, 0.6);
+    }
+
+    /* ===== RESET & TYPOGRAPHY ===== */
+    * { 
+      margin: 0; padding: 0; box-sizing: border-box; 
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    }
+
+    body { 
+      background: var(--app-bg); color: var(--text-primary); 
+      min-height: 100vh; display: flex; flex-direction: column; 
+      overflow-x: hidden; transition: background 0.4s var(--easing), color 0.4s var(--easing); 
+    }
+
+    /* ===== UI COMPONENTS ===== */
+    .apple-card {
+      background: var(--card-bg); border-radius: 20px; padding: 28px;
+      box-shadow: var(--shadow-diffused); border: 1px solid var(--border-color);
+      transition: transform 0.3s var(--easing), box-shadow 0.3s var(--easing), background 0.4s var(--easing);
+    }
+
+    h1, h2, h3 { letter-spacing: -0.02em; font-weight: 600; }
+    .subheadline { color: var(--text-secondary); font-size: 1.1rem; font-weight: 400; letter-spacing: -0.01em; }
+
+    button { transition: transform 0.2s var(--easing), background 0.2s var(--easing), opacity 0.2s var(--easing); cursor: pointer; }
+    button:active { transform: scale(0.96) !important; opacity: 0.8; }
+
+    /* ===== NAVIGATION ===== */
+    header { 
+      position: sticky; top: 0; z-index: 100; padding: 12px 32px; 
+      display: flex; justify-content: space-between; align-items: center; 
+      background: var(--nav-glass); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border-color); transition: background 0.4s var(--easing), transform 0.6s var(--easing);
+    }
+    header.hidden { transform: translateY(-100%); }
+    .logo { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em; }
+    nav { display: flex; gap: 8px; background: var(--input-bg); padding: 4px; border-radius: 99px; }
+    nav button { background: transparent; border: none; color: var(--text-secondary); font-size: 0.95rem; padding: 8px 16px; border-radius: 99px; font-weight: 500; }
+    nav button.active { background: var(--card-bg); color: var(--text-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    nav button:hover:not(.active) { color: var(--text-primary); }
+    #themeToggle { background: none; border: none; font-size: 1.2rem; padding: 8px; border-radius: 50%; color: var(--text-primary); }
+
+    /* ===== PAGE CONTAINERS ===== */
+    .page { display: none; padding: 48px 20px; max-width: 1080px; margin: 0 auto; width: 100%; animation: fadeScaleIn 0.5s var(--easing) forwards; }
+    .page.active { display: block; }
+    @keyframes fadeScaleIn { from { opacity: 0; transform: scale(0.98) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+    /* CRITICAL FIX 1: Strip transforms from page when focusing to allow true fullscreen fixed positioning */
+    body.is-focusing .page { transform: none !important; animation: none !important; padding: 0 !important; max-width: none !important; }
+
+    /* ===== HOME DASHBOARD & TO-DO LIST ===== */
+    .dashboard-header { margin-bottom: 48px; }
+    .dashboard-header h1 { font-size: 3.5rem; margin-bottom: 8px; }
+    .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+    
+    .quote-card { display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden;}
+    .quote-card h2 { font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; font-weight: 600; }
+    .quote-card p { font-size: 1.4rem; font-weight: 400; line-height: 1.4; letter-spacing: -0.01em; transition: opacity 0.3s; }
+    
+    .mood-card h3 { margin-bottom: 24px; font-size: 1.2rem; }
+    .mood-options { display: flex; gap: 12px; }
+    .mood-btn { flex: 1; padding: 16px 0; font-size: 1.8rem; background: var(--input-bg); border: 1px solid transparent; border-radius: 16px; transition: all 0.2s var(--easing); }
+    .mood-btn.selected { background: var(--card-bg); border-color: var(--accent-blue); box-shadow: 0 4px 12px rgba(0, 113, 227, 0.15); }
+
+    .todo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .todo-input-group { display: flex; gap: 8px; margin-bottom: 16px; }
+    .todo-input { flex-grow: 1; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-primary); font-size: 1rem; outline: none; transition: 0.3s; }
+    .todo-input:focus { border-color: var(--accent-blue); background: var(--card-bg); }
+    .todo-add-btn { background: var(--text-primary); color: var(--app-bg); border: none; width: 44px; height: 44px; border-radius: 12px; font-size: 1.5rem; display: flex; justify-content: center; align-items: center; }
+    
+    .task-list { list-style: none; display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; padding-right: 4px;}
+    .task-list::-webkit-scrollbar { width: 4px; }
+    .task-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+    
+    .task-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--input-bg); border-radius: 12px; transition: all 0.3s var(--easing); animation: slideIn 0.3s var(--easing); }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .task-item:hover { background: var(--border-color); }
+    .task-item.completed .task-text { opacity: 0.5; text-decoration: line-through; }
+    
+    .checkbox { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--text-secondary); display: flex; justify-content: center; align-items: center; font-size: 14px; color: transparent; transition: 0.2s; cursor: pointer;}
+    .task-item.completed .checkbox { background: var(--text-primary); border-color: var(--text-primary); color: var(--app-bg); }
+    .task-text { flex-grow: 1; font-size: 1.05rem; cursor: pointer; user-select: none; transition: 0.3s; }
+    .delete-btn { color: var(--text-tertiary); background: none; border: none; font-size: 1.2rem; opacity: 0; padding: 4px; transition: 0.2s; }
+    .task-item:hover .delete-btn { opacity: 1; }
+    .delete-btn:hover { color: var(--danger); }
+
+    .chart-card { min-height: 280px; display: flex; flex-direction: column; }
+    .chart-card canvas { flex-grow: 1; width: 100% !important; max-height: 220px; margin-top: 16px; }
+
+    /* ===== BUTTONS & INPUTS ===== */
+    .btn-primary { background: var(--text-primary); color: var(--app-bg); border: none; padding: 14px 28px; border-radius: 999px; font-size: 1.05rem; font-weight: 600; }
+    .btn-secondary { background: var(--input-bg); color: var(--text-primary); border: none; padding: 14px 28px; border-radius: 999px; font-size: 1.05rem; font-weight: 500; }
+
+    /* ===== FULLSCREEN FOCUS MODULE ===== */
+    .focus-wrapper { 
+      transition: all 0.8s var(--easing); border-radius: 30px; position: relative; overflow: hidden; 
+      display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh;
+    }
+    .focus-wrapper.nature-mode { background: var(--nature-light); }
+    [data-theme="dark"] .focus-wrapper.nature-mode { background: var(--nature-dark); }
+    
+    /* Fullscreen State Trigger */
+    body.is-focusing { overflow: hidden; }
+    body.is-focusing .focus-wrapper { 
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1000; 
+      border-radius: 0; margin: 0; padding: 0; box-shadow: none; border: none;
+    }
+    
+    /* Elements to hide during focus */
+    .hide-on-focus { transition: opacity 0.4s ease, transform 0.4s ease; }
+    body.is-focusing .hide-on-focus { opacity: 0; pointer-events: none; transform: scale(0.95); position: absolute; }
+
+    .focus-layout { display: flex; flex-direction: column; align-items: center; gap: 32px; z-index: 2; width: 100%;}
+    
+    .task-input { 
+      width: 100%; max-width: 400px; padding: 16px 24px; border-radius: 999px; border: 1px solid var(--border-color); 
+      background: var(--input-bg); color: var(--text-primary); font-size: 1.2rem; text-align: center; outline: none; transition: all 0.3s var(--easing); 
+    }
+    .task-input:focus { background: var(--card-bg); border-color: var(--text-primary); box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05); }
+
+    /* ===== CRITICAL FIX 2: Circular Timer with SVG Mask for perfect dots ===== */
+    .timer-container { position: relative; width: 340px; height: 340px; display: flex; justify-content: center; align-items: center; margin: 20px 0; }
+    
+    .progress-ring { position: absolute; top: 0; left: 0; transform: rotate(-90deg); width: 100%; height: 100%; }
+    
+    /* Background grey dots (Static) */
+    .progress-ring__track { 
+      stroke: var(--text-tertiary); opacity: 0.3; stroke-width: 14; fill: transparent; r: 150; cx: 170; cy: 170; 
+      stroke-dasharray: 0 30; stroke-linecap: round;
+    }
+    
+    /* Active colored dots (Static, but hidden by mask) */
+    .progress-ring__active { 
+      stroke: #5d7065; stroke-width: 14; fill: transparent; r: 150; cx: 170; cy: 170; 
+      stroke-dasharray: 0 30; stroke-linecap: round;
+    }
+
+    /* The invisible solid mask that animates to reveal dots */
+    #mask-circle {
+      stroke-dasharray: var(--ring-circumference);
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1s linear;
+    }
+    
+    /* Plant in center */
+    .center-plant { position: absolute; font-size: 3rem; opacity: 0; transform: scale(0.5); transition: all 0.8s var(--easing); }
+    body.is-focusing .center-plant { opacity: 1; transform: scale(1) translateY(-35px); }
+
+    .timer-display { 
+      font-size: 5rem; font-weight: 200; tabular-nums: true; letter-spacing: -0.04em; 
+      line-height: 1; z-index: 2; transition: all 0.8s var(--easing);
+    }
+    body.is-focusing .timer-display { font-size: 4.5rem; transform: translateY(30px); font-weight: 300; color: #1d1d1f;}
+    [data-theme="dark"] body.is-focusing .timer-display { color: #f5f5f7; }
+
+    .timer-controls { display: flex; gap: 16px; z-index: 2;}
+    .stop-btn { display: none; background: #2c2c2e; color: white; border: none; padding: 14px 40px; border-radius: 999px; font-size: 1.1rem; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.15);}
+    body.is-focusing .stop-btn { display: block; animation: fadeScaleIn 0.5s ease forwards; }
+
+    .env-toggle { display: flex; background: var(--input-bg); padding: 4px; border-radius: 99px; }
+    .env-toggle button { background: transparent; border: none; padding: 8px 20px; border-radius: 99px; font-size: 0.95rem; color: var(--text-secondary); font-weight: 500;}
+    .env-toggle button.active { background: var(--card-bg); color: var(--text-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+    /* ===== REALISTIC PHYSICS LEAF ANIMATION ===== */
+    .leaf-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; overflow: hidden; opacity: 0; transition: opacity 1s ease; z-index: 1;}
+    .nature-mode .leaf-container { opacity: 1; }
+    
+    .leaf-wrapper { position: absolute; top: -10%; animation: fallDown linear infinite; }
+    .leaf { 
+      width: 35px; height: 35px; 
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%238cb391"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 7,14 7,14C10,9 15,9.5 19,11.46Z"/></svg>') no-repeat center/contain; 
+      animation: flutter 4s ease-in-out infinite alternate; 
+    }
+
+    .leaf-wrapper.foreground { z-index: 10; filter: blur(6px); }
+    .leaf-wrapper.foreground .leaf { width: 100px; height: 100px; opacity: 0.85; }
+    .leaf-wrapper.midground { z-index: 1; filter: blur(0px); }
+    .leaf-wrapper.midground .leaf { opacity: 0.6; }
+    .leaf-wrapper.background { z-index: 0; filter: blur(2px); }
+    .leaf-wrapper.background .leaf { width: 20px; height: 20px; opacity: 0.4; }
+    
+    @keyframes fallDown { 0% { top: -20%; } 100% { top: 120%; } }
+    @keyframes flutter {
+      0% { transform: translateX(0px) rotate3d(1, 1, 0, 0deg); }
+      50% { transform: translateX(50px) rotate3d(1, 0.5, 1, 60deg); }
+      100% { transform: translateX(-50px) rotate3d(0, 1, 1, 120deg); }
+    }
+
+    /* ===== VAULT MODULE & MODAL ===== */
+    .vault-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
+    .vault-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .vault-card { position: relative; border-radius: 20px; overflow: hidden; aspect-ratio: 4/5; box-shadow: var(--shadow-diffused); border: 1px solid var(--border-color); cursor: pointer; transition: transform 0.3s var(--easing); }
+    .vault-card:hover { transform: scale(1.02); }
+    .vault-card img { width: 100%; height: 100%; object-fit: cover; }
+    .vault-card-info { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: white; padding: 16px; font-size: 0.9rem; }
+
+    .modal-overlay { 
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+      background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; justify-content: center; align-items: center; 
+      opacity: 0; pointer-events: none; transition: opacity 0.3s var(--easing); z-index: 1000;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-content { background: var(--card-bg); width: 90%; max-width: 500px; padding: 32px; border-radius: 24px; box-shadow: var(--shadow-elevation); transform: scale(0.9); transition: transform 0.4s var(--easing); }
+    .modal-overlay.active .modal-content { transform: scale(1); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .close-btn { background: var(--input-bg); border: none; width: 32px; height: 32px; border-radius: 50%; color: var(--text-secondary); display: flex; justify-content: center; align-items: center; font-size: 1.2rem; }
+    
+    .vault-inputs { display: flex; flex-direction: column; gap: 16px; }
+    .vault-inputs input, .vault-inputs textarea { width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-primary); font-size: 1.05rem; outline: none; transition: border-color 0.3s; }
+    .vault-inputs input:focus, .vault-inputs textarea:focus { border-color: var(--text-primary); }
+    .vault-inputs textarea { min-height: 120px; resize: none; }
+    .image-preview { width: 100%; height: 150px; border-radius: 12px; object-fit: cover; display: none; margin-bottom: 8px; border: 1px solid var(--border-color);}
+  </style>
+</head>
+<body>
+
+  <header id="main-header">
+    <div class="logo">AirFlake</div>
+    <div style="display: flex; gap: 16px; align-items: center;">
+      <nav>
+        <button class="active" onclick="switchPage('home')">Dashboard</button>
+        <button onclick="switchPage('focus')">Focus</button>
+        <button onclick="switchPage('vault')">Vault</button>
+      </nav>
+      <button id="themeToggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="page active">
+      <div class="dashboard-header">
+        <div class="subheadline" id="clock">Loading time...</div>
+        <h1 id="greeting">Good Morning.</h1>
+      </div>
+
+      <div class="grid-container">
+        <div class="apple-card quote-card">
+          <h2>Daily Inspiration</h2>
+          <p id="daily-quote">Loading inspiration...</p>
+        </div>
+
+        <div class="apple-card mood-card">
+          <h3>How are you feeling today?</h3>
+          <div class="mood-options">
+            <button class="mood-btn" onclick="selectMood(this, 'Glad to hear it. Harness that energy.')">😊</button>
+            <button class="mood-btn" onclick="selectMood(this, 'Stay focused. You got this.')">😐</button>
+            <button class="mood-btn" onclick="selectMood(this, 'Take a breath. Step away if needed.')">😞</button>
+          </div>
+          <p id="mood-response" style="margin-top: 16px; font-size: 0.95rem; color: var(--text-secondary); height: 20px;"></p>
+        </div>
+
+        <div class="apple-card">
+          <div class="todo-header">
+            <h3 style="font-size: 1.2rem;">To-Do List</h3>
+          </div>
+          <div class="todo-input-group">
+            <input type="text" id="todo-input" class="todo-input" placeholder="Add a new task..." onkeypress="handleTodoEnter(event)" />
+            <button class="todo-add-btn" onclick="addTask()">+</button>
+          </div>
+          <ul class="task-list" id="task-list">
+            <li class="task-item">
+              <div class="checkbox" onclick="toggleTask(this)">✓</div>
+              <span class="task-text" onclick="toggleTask(this.previousElementSibling)">Prepare for NIMCET 2026</span>
+              <button class="delete-btn" onclick="deleteTask(this)">✕</button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="apple-card chart-card">
+          <h3 style="font-size: 1.2rem; margin-bottom: 8px;">Focus Analytics</h3>
+          <canvas id="focusChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section id="focus" class="page">
+      <div class="focus-wrapper apple-card" id="focus-container">
+        
+        <div class="leaf-container" id="leaf-container"></div>
+        
+        <div class="focus-layout">
+          <div class="env-toggle hide-on-focus">
+            <button class="active" onclick="setEnvironment('clean', this)">Clean</button>
+            <button onclick="setEnvironment('nature', this)">Plant</button>
+          </div>
+
+          <input class="task-input hide-on-focus" type="text" id="focusInput" placeholder="What are you focusing on?" />
+          <div class="focus-title-display hide-on-focus" id="focus-title" style="display: none; font-size: 1.1rem; color: var(--text-secondary); font-weight: 500;"></div>
+          
+          <div class="timer-container">
+            <svg class="progress-ring" width="340" height="340">
+              <defs>
+                <mask id="ring-mask">
+                  <circle id="mask-circle" cx="170" cy="170" r="150" fill="transparent" stroke="white" stroke-width="20" stroke-dasharray="942.48" stroke-dashoffset="0" stroke-linecap="butt" />
+                </mask>
+              </defs>
+              <circle class="progress-ring__track" />
+              <circle class="progress-ring__active" mask="url(#ring-mask)" />
+            </svg>
+            <div class="center-plant">🪴</div>
+            <div class="timer-display" id="timer-display">25:00</div>
+          </div>
+          
+          <div class="timer-controls">
+            <button class="btn-primary hide-on-focus" id="start-btn" onclick="startFocusMode()">Start Focus</button>
+            <button class="stop-btn" onclick="stopFocusMode()">Stop & Rest</button>
+            <button class="btn-secondary hide-on-focus" onclick="resetTimer()">Reset</button>
+          </div>
+          
+          <div class="hide-on-focus" style="margin-top: 16px; display: flex; gap: 12px;">
+            <button class="btn-secondary" style="font-size: 0.9rem; padding: 10px 20px;" onclick="setTimer(25)">25m Focus</button>
+            <button class="btn-secondary" style="font-size: 0.9rem; padding: 10px 20px;" onclick="setTimer(5)">5m Break</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="vault" class="page">
+      <div class="vault-header">
+        <div>
+          <h1 style="font-size: 2.5rem; margin-bottom: 4px;">My Vault</h1>
+          <p class="subheadline">Your saved memories and inspiration.</p>
+        </div>
+        <button class="btn-primary" onclick="openVaultModal()">+ New Entry</button>
+      </div>
+      <div class="vault-grid" id="vault-gallery">
+        <div class="vault-card">
+          <img src="https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&q=80&w=600" alt="Memory" />
+          <div class="vault-card-info">
+            <strong style="font-weight: 600;">California</strong><br>
+            <span style="font-size: 0.85rem; opacity: 0.8;">Simplicity is the ultimate sophistication.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-overlay" id="vault-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Add to Vault</h2>
+        <button class="close-btn" onclick="closeVaultModal()">✕</button>
+      </div>
+      <div class="vault-inputs">
+        <img id="modal-preview" class="image-preview" src="" alt="Preview">
+        <button class="btn-secondary" style="text-align: left; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 12px;" onclick="document.getElementById('file-upload').click()">
+          <span style="font-size: 1.2rem; margin-right: 8px;">📷</span> Choose Photo
+        </button>
+        <input type="file" id="file-upload" style="display: none" accept="image/*" onchange="previewModalImage(event)">
+        <input type="text" id="new-caption" placeholder="Location or Title">
+        <textarea id="new-story" placeholder="Write the story behind this moment..."></textarea>
+        <button class="btn-primary" style="margin-top: 8px; width: 100%;" onclick="saveToVault()">Save Entry</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== SPA NAVIGATION LOGIC ===== */
+    function switchPage(pageId) {
+      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    /* ===== THEME TOGGLE ===== */
+    function toggleTheme() {
+      const html = document.documentElement;
+      html.setAttribute('data-theme', html.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+      updateChartTheme();
+    }
+
+    /* ===== HOME DASHBOARD ===== */
+    const quotes = ["Simplicity is the ultimate sophistication.", "Focus on the signal, not the noise.", "Done is better than perfect.", "Design is how it works.", "Stay hungry. Stay foolish."];
+    function setRandomQuote() {
+      const quoteEl = document.getElementById('daily-quote');
+      quoteEl.style.opacity = 0;
+      setTimeout(() => {
+        quoteEl.innerText = `"${quotes[Math.floor(Math.random() * quotes.length)]}"`;
+        quoteEl.style.opacity = 1;
+      }, 300);
+    }
+    setRandomQuote();
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').innerText = `${now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' })} · ${now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
+      const hour = now.getHours();
+      document.getElementById('greeting').innerText = hour < 12 ? 'Good Morning.' : hour < 18 ? 'Good Afternoon.' : 'Good Evening.';
+    }
+    setInterval(updateClock, 1000); updateClock();
+
+    function selectMood(btn, message) {
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('mood-response').innerText = message;
+    }
+
+    /* ===== TO-DO LIST ===== */
+    function addTask() {
+      const input = document.getElementById('todo-input');
+      const text = input.value.trim();
+      if (!text) return;
+      const list = document.getElementById('task-list');
+      const li = document.createElement('li');
+      li.className = 'task-item';
+      li.innerHTML = `<div class="checkbox" onclick="toggleTask(this)">✓</div><span class="task-text" onclick="toggleTask(this.previousElementSibling)">${text}</span><button class="delete-btn" onclick="deleteTask(this)">✕</button>`;
+      list.prepend(li);
+      input.value = '';
+    }
+    function handleTodoEnter(e) { if (e.key === 'Enter') addTask(); }
+    function toggleTask(checkbox) { checkbox.parentElement.classList.toggle('completed'); }
+    function deleteTask(btn) { 
+      const item = btn.parentElement;
+      item.style.opacity = '0'; item.style.transform = 'translateY(10px)';
+      setTimeout(() => item.remove(), 300);
+    }
+
+    /* ===== CHART ===== */
+    const ctx = document.getElementById('focusChart').getContext('2d');
+    let focusChart = new Chart(ctx, {
+      type: 'bar',
+      data: { labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'], datasets: [{ data: [2, 3.5, 3, 4.5, 2, 1, 0.5], backgroundColor: '#1d1d1f', borderRadius: 4, barPercentage: 0.6 }] },
+      options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: 'rgba(150, 150, 150, 0.1)', drawBorder: false }, ticks: { color: '#86868b' } }, x: { grid: { display: false, drawBorder: false }, ticks: { color: '#86868b' } } }, plugins: { legend: { display: false } } }
+    });
+    function updateChartTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      focusChart.data.datasets[0].backgroundColor = isDark ? '#f5f5f7' : '#1d1d1f';
+      focusChart.options.scales.x.ticks.color = isDark ? '#98989d' : '#86868b';
+      focusChart.options.scales.y.ticks.color = isDark ? '#98989d' : '#86868b';
+      focusChart.update();
+    }
+
+    /* ===== FULLSCREEN FOCUS TIMER & MASKED RING ===== */
+    let timerInterval;
+    let totalTime = 25 * 60;
+    let timeLeft = totalTime;
+    
+    const circleMask = document.getElementById('mask-circle');
+    const ringCircumference = 942.48; 
+
+    function setProgress(percent) {
+      // Modifies the invisible mask instead of the dotted line directly
+      circleMask.style.strokeDashoffset = ringCircumference - percent * ringCircumference;
+    }
+
+    function updateTimerDisplay() {
+      const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+      const s = (timeLeft % 60).toString().padStart(2, '0');
+      document.getElementById('timer-display').innerText = `${m}:${s}`;
+      setProgress(timeLeft / totalTime);
+    }
+
+    function startFocusMode() {
+      document.body.classList.add('is-focusing');
+      document.getElementById('main-header').classList.add('hidden');
+      
+      const inputTask = document.getElementById('focusInput').value;
+      const titleDisplay = document.getElementById('focus-title');
+      if(inputTask) {
+        titleDisplay.innerText = "Focusing on: " + inputTask;
+        titleDisplay.style.display = 'block';
+        titleDisplay.classList.remove('hide-on-focus');
+      }
+      
+      timerInterval = setInterval(() => {
+        if (timeLeft > 0) { timeLeft--; updateTimerDisplay(); } 
+        else { stopFocusMode(); alert('Session Complete. Time to rest.'); setTimer(5); }
+      }, 1000);
+    }
+
+    function stopFocusMode() {
+      clearInterval(timerInterval);
+      document.body.classList.remove('is-focusing');
+      document.getElementById('main-header').classList.remove('hidden');
+      
+      const titleDisplay = document.getElementById('focus-title');
+      titleDisplay.style.display = 'none';
+      titleDisplay.classList.add('hide-on-focus');
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval); totalTime = 25 * 60; timeLeft = totalTime; updateTimerDisplay();
+    }
+
+    function setTimer(minutes) {
+      clearInterval(timerInterval); totalTime = minutes * 60; timeLeft = totalTime; updateTimerDisplay();
+    }
+
+    /* ===== LEAF PHYSICS ===== */
+    function setEnvironment(type, btn) {
+      document.querySelectorAll('.env-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const container = document.getElementById('focus-container');
+      const leafBox = document.getElementById('leaf-container');
+      
+      if (type === 'nature') {
+        container.classList.add('nature-mode');
+        leafBox.innerHTML = '';
+        
+        const layers = [
+          { class: 'foreground', count: 3, speed: 3 }, 
+          { class: 'midground', count: 6, speed: 6 },  
+          { class: 'background', count: 5, speed: 10 } 
+        ];
+
+        layers.forEach(layer => {
+          for(let i=0; i < layer.count; i++) {
+            let wrapper = document.createElement('div');
+            wrapper.className = `leaf-wrapper ${layer.class}`;
+            wrapper.style.left = (Math.random() * 100) + '%';
+            
+            let fallSpeed = (Math.random() * 3) + layer.speed;
+            wrapper.style.animationDuration = fallSpeed + 's';
+            wrapper.style.animationDelay = (Math.random() * 5) + 's';
+
+            let leaf = document.createElement('div');
+            leaf.className = 'leaf';
+            leaf.style.transform = `scale(${Math.random() * 0.4 + 0.8})`; 
+            leaf.style.animationDuration = (Math.random() * 2 + 2) + 's'; 
+            
+            wrapper.appendChild(leaf);
+            leafBox.appendChild(wrapper);
+          }
+        });
+      } else {
+        container.classList.remove('nature-mode');
+        setTimeout(() => leafBox.innerHTML = '', 1000); 
+      }
+    }
+
+    /* ===== VAULT ===== */
+    let uploadedImageSrc = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=600";
+    function openVaultModal() { document.getElementById('vault-modal').classList.add('active'); }
+    function closeVaultModal() {
+      document.getElementById('vault-modal').classList.remove('active');
+      document.getElementById('new-caption').value = '';
+      document.getElementById('new-story').value = '';
+      document.getElementById('modal-preview').style.display = 'none';
+      uploadedImageSrc = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=600";
+    }
+    function previewModalImage(event) {
+      const reader = new FileReader();
+      const preview = document.getElementById('modal-preview');
+      reader.onload = function() { uploadedImageSrc = reader.result; preview.src = reader.result; preview.style.display = 'block'; }
+      if(event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
+    }
+    function saveToVault() {
+      const cap = document.getElementById('new-caption').value || 'New Memory';
+      const story = document.getElementById('new-story').value || 'Captured moment.';
+      const gallery = document.getElementById('vault-gallery');
+      const newCard = document.createElement('div');
+      newCard.className = 'vault-card';
+      newCard.innerHTML = `<img src="${uploadedImageSrc}" alt="${cap}" /><div class="vault-card-info"><strong style="font-weight: 600;">${cap}</strong><br><span style="font-size: 0.85rem; opacity: 0.8;">${story}</span></div>`;
+      gallery.insertBefore(newCard, gallery.firstChild);
+      closeVaultModal();
+    }
+  </script>
+</body>
+</html>
